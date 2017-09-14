@@ -1,9 +1,24 @@
+// Execute this migration from the scripts/ directory
+
+var fs = require('fs');
+
 const CentrallyIssuedToken = artifacts.require('./CentrallyIssuedToken.sol');
 const TokenChanger = artifacts.require('./TokenChanger.sol');
 
-var STORJ = CentrallyIssuedToken.at("0xcee82601ad015669d92100b42f665ab6d4746dda");
-var TILE = CentrallyIssuedToken.at("0x8045a43fb3ff107229134c6fa8b3e8cfee722c1e");
+var account = web3.eth.accounts[0];
 
 module.exports = (deployer) => {
-    deployer.deploy(TokenChanger, TILE.address, STORJ.address);
+    var STORJ, TILE;
+    deployer.then(() => {
+        return CentrallyIssuedToken.new(account, 'Storj', "STORJ", 1e15, 7);
+    }).then(instance => {
+        STORJ = instance.address;
+        return CentrallyIssuedToken.new(account, 'Loomia', "TILE", 1e15, 7);
+    }).then(instance => {
+        TILE = instance.address;
+        return TokenChanger.new(TILE, STORJ);
+    }).then(instance => {
+        var addresses = [STORJ, TILE, instance.address].join('\n');
+        fs.writeFileSync('addresses', addresses);
+    });
 }

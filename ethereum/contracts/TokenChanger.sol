@@ -13,8 +13,8 @@ contract TokenChanger {
 
     function TokenChanger (address tileContract, address storjContract) {
         owner = msg.sender;
-        tileContract = CentrallyIssuedToken(tileContract);
-        storjContract = CentrallyIssuedToken(storjContract);
+        TILE = CentrallyIssuedToken(tileContract);
+        STORJ = CentrallyIssuedToken(storjContract);
     }
 
     function tileBalance () constant returns (uint) {
