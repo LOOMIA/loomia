@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.15;
 
 import './CentrallyIssuedToken.sol';
 
@@ -27,11 +27,29 @@ contract TokenChanger {
 
     // price of STORJ in TILE
     function storjPrice () constant returns (uint) {
-        return storjBalance() * TARGET_PRICE_RATIO / tileBalance();
+        return storjBalance() * 1e7 * TARGET_PRICE_RATIO / tileBalance();
     }
 
     // price of TILE in STORJ 
     function tilePrice () constant returns (uint) {
-        return tileBalance() / TARGET_PRICE_RATIO / storjBalance();
+        return tileBalance() * 1e7 / TARGET_PRICE_RATIO / storjBalance();
+    }
+
+    // user has to approve contract to transfer funds before
+    // running this function or it will throw an error
+    function buyTile(uint quantity) {
+        uint price = tilePrice() * quantity / 1e7;
+        bool success = STORJ.transferFrom(msg.sender, address(this), price);
+        require(success);
+        success = TILE.transfer(msg.sender, quantity);
+        require(success);
+    }
+
+    function buyStorj (uint quantity) {
+        uint price = storjPrice() * quantity / 1e7;
+        bool success = TILE.transferFrom(msg.sender, address(this), price);
+        require(success);
+        success = STORJ.transfer(msg.sender, quantity);
+        require(success);
     }
 }

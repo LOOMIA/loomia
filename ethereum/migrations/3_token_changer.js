@@ -7,6 +7,11 @@ const TokenChanger = artifacts.require('./TokenChanger.sol');
 
 var account = web3.eth.accounts[0];
 
+function cd_project_root() {
+    while (!fs.existsSync('truffle.js'))
+        process.chdir('..')
+}
+
 module.exports = (deployer) => {
     var STORJ, TILE;
     deployer.then(() => {
@@ -19,6 +24,7 @@ module.exports = (deployer) => {
         return TokenChanger.new(TILE, STORJ);
     }).then(instance => {
         var addresses = [STORJ, TILE, instance.address].join('\n');
-        fs.writeFileSync('addresses', addresses);
+        cd_project_root();
+        fs.writeFileSync('contracts/addresses', addresses);
     });
 }
