@@ -8,8 +8,8 @@ contract TokenChanger {
     CentrallyIssuedToken TILE;
     CentrallyIssuedToken STORJ;
 
-    // target for STORJ/LOOMIA price 
-    uint TARGET_PRICE_RATIO = 4; 
+    uint RESERVE_RATIO = 10; 
+    uint DECIMAL_PLACES = 7;
 
     function TokenChanger (address tileContract, address storjContract) {
         owner = msg.sender;
@@ -27,16 +27,20 @@ contract TokenChanger {
 
     // price of STORJ in TILE
     function storjPrice () constant returns (uint) {
-        return storjBalance() * 1e7 * TARGET_PRICE_RATIO / tileBalance();
+        return tileBalance() * 10**DECIMAL_PLACES / 
+               (storjBalance() * RESERVE_RATIO);
     }
 
     // price of TILE in STORJ 
     function tilePrice () constant returns (uint) {
-        return tileBalance() * 1e7 / TARGET_PRICE_RATIO / storjBalance();
+        return storjBalance() * 10**DECIMAL_PLACES * RESERVE_RATIO / 
+               tileBalance();
     }
 
-    // user has to approve contract to transfer funds before
-    // running this function or it will throw an error
+    // User has to approve TILE contract to transfer funds before
+    // running this function or it will throw an error. 
+    // Later on, if the token changer is part the TILE contract, 
+    // no approval would be required
     function buyTile(uint quantity) {
         uint price = tilePrice() * quantity / 1e7;
         bool success = STORJ.transferFrom(msg.sender, address(this), price);
@@ -45,6 +49,8 @@ contract TokenChanger {
         require(success);
     }
 
+    // user has to approve STORJ contract to transfer funds before
+    // running this function or it will throw an error
     function buyStorj (uint quantity) {
         uint price = storjPrice() * quantity / 1e7;
         bool success = TILE.transferFrom(msg.sender, address(this), price);

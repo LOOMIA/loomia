@@ -29,16 +29,21 @@ module.exports = function (callback) {
     TILE = CentrallyIssuedToken.at(addresses[1]);
     changer = TokenChanger.at(addresses[2]);
     
-    STORJ.transfer(changer.address, 1e12, { from: web3.eth.accounts[0] });
-    TILE.transfer(changer.address, 1e11, { from: web3.eth.accounts[0] });
+    // 200K Storj, 4M TILE held in contract to start
+    // I'm assuming TILE at $0.25 and Storj at $0.50
+    // So $100K Storj, $1M TILE
+    STORJ.transfer(changer.address, 2e12, { from: web3.eth.accounts[0] });
+    TILE.transfer(changer.address, 4e13, { from: web3.eth.accounts[0] });
 
+    // Transfer 100 TILE to user
     TILE.transfer(web3.eth.accounts[1], 1e9, { from: web3.eth.accounts[0] });
     prom = TILE.approve(changer.address, 0, { from: web3.eth.accounts[1] });
     logErr('tile approve', prom);
     prom = TILE.approve(changer.address, 1e9, { from: web3.eth.accounts[1] });
     logErr('tile approve', prom);
 
-    prom = changer.buyStorj(1e7, { 
+    // Buy 10 STORJ with TILE
+    prom = changer.buyStorj(1e8, { 
         from: web3.eth.accounts[1], 
         gas: 200e3 
     });
@@ -47,8 +52,10 @@ module.exports = function (callback) {
     setTimeout(() => {
         log('storj price', changer.storjPrice())
         log('tile price', changer.tilePrice())
-        log('storj balance', STORJ.balanceOf(web3.eth.accounts[1]))
-        log('tile balance', TILE.balanceOf(web3.eth.accounts[1]))
+        log('contract storj balance', STORJ.balanceOf(addresses[2]))
+        log('contract tile balance', TILE.balanceOf(addresses[2]))
+        log('user storj balance', STORJ.balanceOf(web3.eth.accounts[1]))
+        log('user tile balance', TILE.balanceOf(web3.eth.accounts[1]))
     }, 500);
     
     callback();
