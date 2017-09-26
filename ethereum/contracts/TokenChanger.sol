@@ -1,8 +1,10 @@
 pragma solidity ^0.4.15;
 
 import './CentrallyIssuedToken.sol';
+import './SafeMath.sol';
+import './BancorFormula.sol';
 
-contract TokenChanger {
+contract TokenChanger is BancorFormula {
     
     address owner; 
     CentrallyIssuedToken TILE;
@@ -41,21 +43,24 @@ contract TokenChanger {
     // running this function or it will throw an error. 
     // Later on, if the token changer is part the TILE contract, 
     // no approval would be required
-    function buyTile(uint quantity) {
-        uint price = tilePrice() * quantity / 1e7;
-        bool success = STORJ.transferFrom(msg.sender, address(this), price);
+    // WARNING: CRR IS HARDCODED
+    function sellTile(uint quantity) {
+        success = TILE.transferFrom(msg.sender, address(this), quantity);
         require(success);
-        success = TILE.transfer(msg.sender, quantity);
+        uint bid = BancorFormula.calculateSaleReturn(tileBalance(), storjBalance(), 1e5, quantity);
+        bool success = STORJ.transfer(msg.sender, bid);
         require(success);
     }
 
     // user has to approve STORJ contract to transfer funds before
     // running this function or it will throw an error
-    function buyStorj (uint quantity) {
-        uint price = storjPrice() * quantity / 1e7;
-        bool success = TILE.transferFrom(msg.sender, address(this), price);
+    // WARNING: CRR IS HARDCODED
+    function sellStorj (uint quantity) {
+        bool success = STORJ.transferFrom(msg.sender, address(this), quantity);
         require(success);
-        success = STORJ.transfer(msg.sender, quantity);
+        uint bid = BancorFormula.calculatePurchaseReturn(tileBalance(), storjBalance(), 1e5, quantity);
+        success = TILE.transfer(msg.sender, bid);
         require(success);
     }
+
 }

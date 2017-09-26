@@ -37,17 +37,32 @@ module.exports = function (callback) {
 
     // Transfer 100 TILE to user
     TILE.transfer(web3.eth.accounts[1], 1e9, { from: web3.eth.accounts[0] });
+
+    // Approve 100 TILE to TokenChanger
     prom = TILE.approve(changer.address, 0, { from: web3.eth.accounts[1] });
     logErr('tile approve', prom);
     prom = TILE.approve(changer.address, 1e9, { from: web3.eth.accounts[1] });
     logErr('tile approve', prom);
 
-    // Buy 10 STORJ with TILE
-    prom = changer.buyStorj(1e8, { 
+    // Sell 100 TILE
+    prom = changer.sellTile(1e9, { 
         from: web3.eth.accounts[1], 
         gas: 200e3 
     });
-    logErr('buy storj', prom);
+    logErr('sell tile', prom);
+
+    // Approve 40 STORJ to TokenChanger
+    prom = STORJ.approve(changer.address, 0, { from: web3.eth.accounts[1] });
+    logErr('storj approve', prom);
+    prom = STORJ.approve(changer.address, 4e8, { from: web3.eth.accounts[1] });
+    logErr('storj approve', prom);
+
+    // Sell 40 STORJ
+    prom = changer.sellStorj(4e8, { 
+        from: web3.eth.accounts[1], 
+        gas: 200e3 
+    });
+    logErr('sell storj', prom);
 
     setTimeout(() => {
         log('storj price', changer.storjPrice())
