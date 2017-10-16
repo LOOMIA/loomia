@@ -65,7 +65,7 @@ contract StandardToken is ERC20, SafeMath {
   * From MonolithDAO Token.sol
   */
  function increaseApproval (address _spender, uint _addedValue) public returns (bool success) {
-   allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
+   allowed[msg.sender][_spender] = safeAdd( allowed[msg.sender][_spender], _addedValue );
    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
    return true;
  }
@@ -75,7 +75,7 @@ contract StandardToken is ERC20, SafeMath {
    if (_subtractedValue > oldValue) {
      allowed[msg.sender][_spender] = 0;
    } else {
-     allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
+     allowed[msg.sender][_spender] = safeSub( oldValue, _subtractedValue );
    }
    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
    return true;
