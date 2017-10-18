@@ -5,6 +5,10 @@
 
 <body>
 
+<div id="tx-hash"></div>
+
+<div><button id="update-balances">Update Balances</button></div>
+
 <table>
     <thead><tr>
         <th></th>
@@ -56,13 +60,21 @@
         </tr>
 
         <tr>
+            <td>Current Allowance</td>
+            <td id="tile-allowance"></td>
+            <td id="storj-allowance"></td>
+        </tr>
+
+        <tr>
             <td>Sell Coin</td>
             <td>
-                <input id="tile-sell-amount">
+                <input id="tile-sell-amount" type="number">
+                <button id="approve-tile">Approve</button>
                 <button id="sell-tile">Sell</button>
             </td>
             <td>
-                <input id="storj-sell-amount">
+                <input id="storj-sell-amount" type="number">
+                <button id="approve-storj">Approve</button>
                 <button id="sell-storj">Sell</button>
             </td>
         </tr>

@@ -46,6 +46,7 @@ Promise.all(promises).then(function (values) {
         C = Number(document.querySelector("#contract-storj-balance").textContent);
         C *= 1e7;
         var storjReturn = C * (1 - (1 - T/S)**W) / 1e7;
+        storjReturn = storjReturn.toFixed(7);
         document.querySelector('#storj-return').textContent = storjReturn;
     });
 
@@ -60,10 +61,53 @@ Promise.all(promises).then(function (values) {
         C = Number(document.querySelector("#contract-storj-balance").textContent);
         C *= 1e7;
         var tileReturn = S * ((1 + E/C)**W - 1) / 1e7;
+        tileReturn = tileReturn.toFixed(7);
         document.querySelector('#tile-return').textContent = tileReturn;
     });
 
+    document.querySelector("#approve-tile").addEventListener('click', function () {
+        var amount = document.querySelector("#tile-sell-amount").valueAsNumber;
+        amount = parseInt(amount * 1e7);
+        TILE.methods.approve(addresses[2], amount).send({ from: accounts[0] })
+            .on("transactionHash", displayTx);
+    });
 
+    document.querySelector("#sell-tile").addEventListener('click', function () {
+        var amount = document.querySelector("#tile-sell-amount").valueAsNumber;
+        amount = parseInt(amount * 1e7);
+        Changer.methods.sellTile(amount).send({ from: accounts[0] })
+            .on("transactionHash", displayTx) 
+            .on("receipt", function () {
+                console.log('here');
+                updatePricesAndBalances(); 
+            })
+            .on("error", console.log);
+    });
+
+    document.querySelector("#approve-storj").addEventListener('click', function () {
+        var amount = document.querySelector("#storj-sell-amount").valueAsNumber;
+        amount = parseInt(amount * 1e7);
+        STORJ.methods.approve(addresses[2], amount).send({ from: accounts[0] })
+            .on("transactionHash", displayTx)
+            .on("receipt", updatePricesAndBalances)
+    });
+
+    document.querySelector("#sell-storj").addEventListener('click', function () {
+        var amount = document.querySelector("#storj-sell-amount").valueAsNumber;
+        amount = parseInt(amount * 1e7);
+        Changer.methods.sellStorj(amount).send({ from: accounts[0] })
+            .on("transactionHash", displayTx)
+            .on("receipt", updatePricesAndBalances)
+            .on("error", console.error);
+    });
+
+    document.querySelector("#update-balances", updatePricesAndBalances); 
+
+    function displayTx(tx) {
+        var url = "https://rinkeby.etherscan.io/tx/" + tx;
+        var html = `<a href=${url}>${tx}</a>`;
+        document.querySelector("#tx-hash").innerHTML = html;
+    }
 
     function updatePricesAndBalances () {
         var url = "https://min-api.cryptocompare.com/data/price?fsym=STORJ&tsyms=USD";
@@ -99,6 +143,16 @@ Promise.all(promises).then(function (values) {
         TILE.methods.balanceOf(accounts[0]).call().then(bal => {
             bal = bal / 1e7;
             document.querySelector("#wallet-tile-balance").textContent = bal;
+        });
+
+        TILE.methods.allowance(accounts[0], addresses[2]).call().then(num => {
+            num = num / 1e7;
+            document.querySelector("#tile-allowance").textContent = num;
+        });
+
+        STORJ.methods.allowance(accounts[0], addresses[2]).call().then(num => {
+            num = num / 1e7;
+            document.querySelector("#storj-allowance").textContent = num;
         });
     }
 });
