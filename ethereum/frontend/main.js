@@ -36,7 +36,32 @@ Promise.all(promises).then(function (values) {
     updatePricesAndBalances();
 
     document.querySelector("#calculate-storj-return")
+        .addEventListener('click', function () {
+        var amount = document.querySelector("#tile-calc-amount").valueAsNumber;
 
+        S = Number(document.querySelector("#contract-tile-balance").textContent);
+        S *= 1e7;
+        T = parseInt(amount * 1e7);
+        W = 10;
+        C = Number(document.querySelector("#contract-storj-balance").textContent);
+        C *= 1e7;
+        var storjReturn = C * (1 - (1 - T/S)**W) / 1e7;
+        document.querySelector('#storj-return').textContent = storjReturn;
+    });
+
+    document.querySelector("#calculate-tile-return")
+        .addEventListener('click', function () {
+        var amount = document.querySelector("#storj-calc-amount").valueAsNumber;
+
+        S = Number(document.querySelector("#contract-tile-balance").textContent);
+        S *= 1e7;
+        E = parseInt(amount * 1e7);
+        W = .1;
+        C = Number(document.querySelector("#contract-storj-balance").textContent);
+        C *= 1e7;
+        var tileReturn = S * ((1 + E/C)**W - 1) / 1e7;
+        document.querySelector('#tile-return').textContent = tileReturn;
+    });
 
 
 
@@ -48,12 +73,12 @@ Promise.all(promises).then(function (values) {
 
         Changer.methods.storjPrice().call().then(price => {
             price = price / 1e7;
-            document.querySelector("#tile-price-in-storj").textContent = price;
+            document.querySelector("#storj-price-in-tile").textContent = price;
         });
 
         Changer.methods.tilePrice().call().then(price => {
             price = price / 1e7;
-            document.querySelector("#storj-price-in-tile").textContent = price;
+            document.querySelector("#tile-price-in-storj").textContent = price;
         });
 
         STORJ.methods.balanceOf(addresses[2]).call().then(bal => {
