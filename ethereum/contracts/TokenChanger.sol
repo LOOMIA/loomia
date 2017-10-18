@@ -6,12 +6,12 @@ import './BancorFormula.sol';
 
 contract TokenChanger is BancorFormula {
     
-    address owner; 
+    address public owner; 
     CentrallyIssuedToken TILE;
     CentrallyIssuedToken STORJ;
 
-    uint RESERVE_RATIO = 10; 
-    uint DECIMAL_PLACES = 7;
+    uint public RESERVE_RATIO = 10; 
+    uint public DECIMAL_PLACES = 7;
 
     function TokenChanger (address tileContract, address storjContract) {
         owner = msg.sender;

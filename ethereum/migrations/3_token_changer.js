@@ -1,5 +1,3 @@
-// Execute this migration from the scripts/ directory
-
 var fs = require('fs');
 
 const CentrallyIssuedToken = artifacts.require('./CentrallyIssuedToken.sol');
@@ -12,8 +10,19 @@ function cd_project_root() {
         process.chdir('..')
 }
 
-module.exports = (deployer) => {
+function unlock(wallet) {
+    cd_project_root();
+    var password = fs.readFileSync("password", "utf8")
+                     .split('\n')[0];
+    web3.personal.unlockAccount(wallet, password)
+}
+
+module.exports = (deployer, network) => {
     var STORJ, TILE;
+
+    if (network == "rinkeby" || network == "mainnet")
+        unlock(web3.eth.accounts[0])
+
     deployer.then(() => {
         return CentrallyIssuedToken.new(account, 'Storj', "STORJ", 1e15, 7);
     }).then(instance => {
@@ -25,6 +34,6 @@ module.exports = (deployer) => {
     }).then(instance => {
         var addresses = [STORJ, TILE, instance.address].join('\n');
         cd_project_root();
-        fs.writeFileSync('contracts/addresses', addresses);
+        fs.writeFileSync('addresses', addresses);
     });
 }

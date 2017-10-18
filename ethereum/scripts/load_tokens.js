@@ -23,7 +23,7 @@ function logResponse(name, promise) {
 
 module.exports = function (callback) {
     cd_project_root();
-    addresses = fs.readFileSync("contracts/addresses", "utf8").split('\n');
+    addresses = fs.readFileSync("addresses", "utf8").split('\n');
 
     STORJ = CentrallyIssuedToken.at(addresses[0]);
     TILE = CentrallyIssuedToken.at(addresses[1]);

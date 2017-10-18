@@ -1,0 +1,75 @@
+<html>
+
+<head>
+</head>
+
+<body>
+
+<table>
+    <thead><tr>
+        <th></th>
+        <th>TILE</th>
+        <th>STORJ</th>
+    </tr></thead>
+
+    <tbody>
+        <tr>
+            <td>Price ($)</td>
+            <td id="tile-price"></td>
+            <td id="storj-price">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Price Exchange</td>
+            <td id="tile-price-in-storj">Loading...</td>
+            <td id="storj-price-in-tile">Loading...</td>
+        </tr>
+        
+        <tr>
+            <td>Contract Balance</td>
+            <td id="contract-tile-balance">Loading...</td>
+            <td id="contract-storj-balance">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Wallet Balance</td>
+            <td id="wallet-tile-balance">Loading...</td>
+            <td id="wallet-storj-balance">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Calculate Sale Return</td>
+            <td>
+                <input id="tile-calc-amount">
+                <button id="calculate-storj-return">Calculate</button>
+            </td>
+            <td>
+                <input id="storj-calc-amount">
+                <button id="calculate-tile-return">Calculate</button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Sale Return</td>
+            <td id="storj-return"></td>
+            <td id="tile-return"></td>
+        </tr>
+
+        <tr>
+            <td>Sell Coin</td>
+            <td>
+                <input id="tile-sell-amount">
+                <button id="sell-tile">Sell</button>
+            </td>
+            <td>
+                <input id="storj-sell-amount">
+                <button id="sell-storj">Sell</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script src="bundle.js"></script>
+
+</body>
+</html>
