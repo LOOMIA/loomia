@@ -35,34 +35,63 @@ Promise.all(promises).then(function (values) {
 
     updatePricesAndBalances();
 
+    document.querySelector("#storj-contract").href = 
+        `https://rinkeby.etherscan.io/address/${addresses[0]}`
+    document.querySelector("#tile-contract").href = 
+        `https://rinkeby.etherscan.io/address/${addresses[1]}`
+    document.querySelector("#token-changer-contract").href = 
+        `https://rinkeby.etherscan.io/address/${addresses[2]}`
+
     document.querySelector("#calculate-storj-return")
         .addEventListener('click', function () {
         var amount = document.querySelector("#tile-calc-amount").valueAsNumber;
 
-        S = Number(document.querySelector("#contract-tile-balance").textContent);
+        S = Number(document.querySelector("#contract-tile-balance")
+            .textContent.replace(/,/g, ''));
         S *= 1e7;
         T = parseInt(amount * 1e7);
         W = 10;
-        C = Number(document.querySelector("#contract-storj-balance").textContent);
+        C = Number(document.querySelector("#contract-storj-balance")
+            .textContent.replace(/,/g, ''));
         C *= 1e7;
+
         var storjReturn = C * (1 - (1 - T/S)**W) / 1e7;
+        var averageReturn = storjReturn / amount;
+        var averageSale = amount / storjReturn;
+
         storjReturn = storjReturn.toFixed(7);
+        averageReturn = averageReturn.toFixed(7);
+        averageSale = averageSale.toFixed(7);
+
         document.querySelector('#storj-return').textContent = storjReturn;
+        document.querySelector('#storj-average-return').textContent = averageReturn;
+        document.querySelector('#tile-average-sale').textContent = averageSale;
     });
 
     document.querySelector("#calculate-tile-return")
         .addEventListener('click', function () {
         var amount = document.querySelector("#storj-calc-amount").valueAsNumber;
 
-        S = Number(document.querySelector("#contract-tile-balance").textContent);
+        S = Number(document.querySelector("#contract-tile-balance")
+            .textContent.replace(/,/g, ''));
         S *= 1e7;
         E = parseInt(amount * 1e7);
         W = .1;
-        C = Number(document.querySelector("#contract-storj-balance").textContent);
+        C = Number(document.querySelector("#contract-storj-balance")
+            .textContent.replace(/,/g, ''));
         C *= 1e7;
+
         var tileReturn = S * ((1 + E/C)**W - 1) / 1e7;
+        var averageReturn = tileReturn / amount;
+        var averageSale = amount / tileReturn;
+
         tileReturn = tileReturn.toFixed(7);
+        averageReturn = averageReturn.toFixed(7);
+        averageSale = averageSale.toFixed(7);
+
         document.querySelector('#tile-return').textContent = tileReturn;
+        document.querySelector('#tile-average-return').textContent = averageReturn;
+        document.querySelector('#storj-average-sale').textContent = averageSale;
     });
 
     document.querySelector("#approve-tile").addEventListener('click', function () {
@@ -126,34 +155,39 @@ Promise.all(promises).then(function (values) {
         });
 
         STORJ.methods.balanceOf(addresses[2]).call().then(bal => {
-            bal = bal / 1e7;
+            bal = numberWithCommas(bal / 1e7);
             document.querySelector("#contract-storj-balance").textContent = bal;
         });
 
         TILE.methods.balanceOf(addresses[2]).call().then(bal => {
-            bal = bal / 1e7;
+            bal = numberWithCommas(bal / 1e7);
             document.querySelector("#contract-tile-balance").textContent = bal;
         });
 
         STORJ.methods.balanceOf(accounts[0]).call().then(bal => {
-            bal = bal / 1e7;
+            bal = numberWithCommas(bal / 1e7);
             document.querySelector("#wallet-storj-balance").textContent = bal;
         });
 
         TILE.methods.balanceOf(accounts[0]).call().then(bal => {
-            bal = bal / 1e7;
+            bal = numberWithCommas(bal / 1e7);
             document.querySelector("#wallet-tile-balance").textContent = bal;
         });
 
         TILE.methods.allowance(accounts[0], addresses[2]).call().then(num => {
-            num = num / 1e7;
+            num = numberWithCommas(num / 1e7);
             document.querySelector("#tile-allowance").textContent = num;
         });
 
         STORJ.methods.allowance(accounts[0], addresses[2]).call().then(num => {
-            num = num / 1e7;
+            num = numberWithCommas(num / 1e7);
             document.querySelector("#storj-allowance").textContent = num;
         });
     }
 });
 
+function numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+}
