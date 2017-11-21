@@ -1,3 +1,6 @@
 build/
 contracts/addresses
-
+contracts/addresses_bnt
+addresses
+password
+frontend/node_modules

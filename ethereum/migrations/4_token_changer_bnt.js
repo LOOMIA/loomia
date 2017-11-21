@@ -1,7 +1,7 @@
 var fs = require('fs');
 
 const CentrallyIssuedToken = artifacts.require('./CentrallyIssuedToken.sol');
-const TokenChanger = artifacts.require('./TokenChanger.sol');
+const TokenChangerBNT = artifacts.require('./TokenChangerBNT.sol');
 
 var account = web3.eth.accounts[0];
 
@@ -18,22 +18,25 @@ function unlock(wallet) {
 }
 
 module.exports = (deployer, network) => {
-    var STORJ, TILE;
+    cd_project_root();
+    var BNT;
+
+    // for TestRPC deployments
+    //var TILE = fs.readFileSync('addresses', 'utf8').split('\n')[1];
+
+    // Rinkeby address
+    var TILE = "0x25Cb4b8A72f17178c7e54129d88388bbc0cA4e90";
 
     if (network == "rinkeby" || network == "mainnet")
         unlock(web3.eth.accounts[0])
 
     deployer.then(() => {
-        return CentrallyIssuedToken.new(account, 'Storj', "STORJ", 1e15, 7);
+        return CentrallyIssuedToken.new(account, 'Bancor', "BNT", 1e15, 7);
     }).then(instance => {
-        STORJ = instance.address;
-        return CentrallyIssuedToken.new(account, 'Loomia', "TILE", 1e15, 7);
+        BNT = instance.address;
+        return TokenChangerBNT.new(TILE, BNT);
     }).then(instance => {
-        TILE = instance.address;
-        return TokenChanger.new(TILE, STORJ);
-    }).then(instance => {
-        var addresses = [STORJ, TILE, instance.address].join('\n');
-        cd_project_root();
-        fs.writeFileSync('addresses', addresses);
+        var addresses = [BNT, instance.address].join('\n');
+        fs.writeFileSync('addresses_bnt', addresses);
     });
 }

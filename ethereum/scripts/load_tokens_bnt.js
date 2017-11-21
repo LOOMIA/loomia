@@ -1,6 +1,6 @@
 var fs = require('fs');
 const CentrallyIssuedToken = artifacts.require('./CentrallyIssuedToken.sol');
-const TokenChanger = artifacts.require('./TokenChanger.sol');
+const TokenChangerBNT = artifacts.require('./TokenChangerBNT.sol');
 
 function cd_project_root() {
     while (!fs.existsSync('truffle.js'))
@@ -23,20 +23,23 @@ function logResponse(name, promise) {
 
 module.exports = function (callback) {
     cd_project_root();
-    addresses = fs.readFileSync("addresses", "utf8").split('\n');
 
-    STORJ = CentrallyIssuedToken.at(addresses[0]);
+    addresses = fs.readFileSync("addresses", "utf8").split('\n');
     TILE = CentrallyIssuedToken.at(addresses[1]);
-    changer = TokenChanger.at(addresses[2]);
+
+    addresses = fs.readFileSync("addresses_bnt", "utf8").split('\n');
+    BNT = CentrallyIssuedToken.at(addresses[0]);
+    changer = TokenChangerBNT.at(addresses[1]);
     
-    // 200K Storj, 4M TILE held in contract to start
-    // I'm assuming TILE at $0.25 and Storj at $0.50
-    // So $100K Storj, $1M TILE
-    STORJ.transfer(changer.address, 2e12, { from: web3.eth.accounts[0] });
+    // 50K BNT, 4M TILE held in contract to start
+    // I'm assuming TILE at $0.25 and BNT at $2.00
+    // So $100K BNT, $1M TILE
+    BNT.transfer(changer.address, 5e11, { from: web3.eth.accounts[0] });
     TILE.transfer(changer.address, 4e13, { from: web3.eth.accounts[0] });
 
-    // Transfer 100 TILE to user
+    // Transfer 100 TILE and 40 BNT to user
     TILE.transfer(web3.eth.accounts[1], 1e9, { from: web3.eth.accounts[0] });
+    BNT.transfer(web3.eth.accounts[1], 4e8, { from: web3.eth.accounts[0] });
 
     // Approve 100 TILE to TokenChanger
     prom = TILE.approve(changer.address, 0, { from: web3.eth.accounts[1] });
@@ -51,25 +54,25 @@ module.exports = function (callback) {
     });
     logErr('sell tile', prom);
 
-    // Approve 40 STORJ to TokenChanger
-    prom = STORJ.approve(changer.address, 0, { from: web3.eth.accounts[1] });
-    logErr('storj approve', prom);
-    prom = STORJ.approve(changer.address, 4e8, { from: web3.eth.accounts[1] });
-    logErr('storj approve', prom);
+    // Approve 40 BNT to TokenChanger
+    prom = BNT.approve(changer.address, 0, { from: web3.eth.accounts[1] });
+    logErr('BNT approve', prom);
+    prom = BNT.approve(changer.address, 4e8, { from: web3.eth.accounts[1] });
+    logErr('BNT approve', prom);
 
-    // Sell 40 STORJ
-    prom = changer.sellStorj(4e8, { 
+    // Sell 40 BNT
+    prom = changer.sellBNT(4e8, { 
         from: web3.eth.accounts[1], 
         gas: 200e3 
     });
-    logErr('sell storj', prom);
+    logErr('sell BNT', prom);
 
     setTimeout(() => {
-        log('storj price', changer.storjPrice())
+        log('BNT price', changer.BNTPrice())
         log('tile price', changer.tilePrice())
-        log('contract storj balance', STORJ.balanceOf(addresses[2]))
-        log('contract tile balance', TILE.balanceOf(addresses[2]))
-        log('user storj balance', STORJ.balanceOf(web3.eth.accounts[1]))
+        log('contract BNT balance', BNT.balanceOf(changer.address))
+        log('contract tile balance', TILE.balanceOf(changer.address))
+        log('user BNT balance', BNT.balanceOf(web3.eth.accounts[1]))
         log('user tile balance', TILE.balanceOf(web3.eth.accounts[1]))
     }, 500);
     

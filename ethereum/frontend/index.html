@@ -1,0 +1,200 @@
+<html>
+
+<head>
+</head>
+
+<body>
+
+<div id="tx-hash"></div>
+
+<div><button id="update-balances">Update Balances</button></div>
+
+<table>
+    <thead><tr>
+        <th></th>
+        <th>TILE</th>
+        <th>STORJ</th>
+    </tr></thead>
+
+    <tbody>
+        <tr>
+            <td>Price ($)</td>
+            <td id="tile-price"></td>
+            <td id="storj-price">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Price Exchange</td>
+            <td id="tile-price-in-storj">Loading...</td>
+            <td id="storj-price-in-tile">Loading...</td>
+        </tr>
+        
+        <tr>
+            <td>Contract Balance</td>
+            <td id="contract-tile-balance">Loading...</td>
+            <td id="contract-storj-balance">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Wallet Balance</td>
+            <td id="wallet-tile-balance">Loading...</td>
+            <td id="wallet-storj-balance">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Calculate Sale Return</td>
+            <td>
+                <input id="tile-calc-amount" type="number">
+                <button id="calculate-storj-return">Calculate</button>
+            </td>
+            <td>
+                <input id="storj-calc-amount" type="number">
+                <button id="calculate-tile-return">Calculate</button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Sale Return</td>
+            <td id="storj-return"></td>
+            <td id="tile-return"></td>
+        </tr>
+
+        <tr>
+            <td>Average Return</td>
+            <td id="storj-average-return"></td>
+            <td id="tile-average-return"></td>
+        </tr>
+
+        <tr>
+            <td>Average Sale</td>
+            <td id="tile-average-sale"></td>
+            <td id="storj-average-sale"></td>
+        </tr>
+
+        <tr>
+            <td>Current Allowance</td>
+            <td id="tile-allowance"></td>
+            <td id="storj-allowance"></td>
+        </tr>
+
+        <tr>
+            <td>Sell Coin</td>
+            <td>
+                <input id="tile-sell-amount" type="number">
+                <button id="approve-tile">Approve</button>
+                <button id="sell-tile">Sell</button>
+            </td>
+            <td>
+                <input id="storj-sell-amount" type="number">
+                <button id="approve-storj">Approve</button>
+                <button id="sell-storj">Sell</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<hr>
+
+<table>
+    <thead><tr>
+        <th></th>
+        <th>TILE</th>
+        <th>BNT</th>
+    </tr></thead>
+
+    <tbody>
+        <tr>
+            <td>Price ($)</td>
+            <td id="bnt-tile-price"></td>
+            <td id="bnt-price">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Price Exchange</td>
+            <td id="tile-price-in-bnt">Loading...</td>
+            <td id="bnt-price-in-tile">Loading...</td>
+        </tr>
+        
+        <tr>
+            <td>Contract Balance</td>
+            <td id="contract-bnt-tile-balance">Loading...</td>
+            <td id="contract-bnt-balance">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Wallet Balance</td>
+            <td id="wallet-bnt-tile-balance">Loading...</td>
+            <td id="wallet-bnt-balance">Loading...</td>
+        </tr>
+
+        <tr>
+            <td>Calculate Sale Return</td>
+            <td>
+                <input id="bnt-tile-calc-amount" type="number">
+                <button id="calculate-bnt-return">Calculate</button>
+            </td>
+            <td>
+                <input id="bnt-calc-amount" type="number">
+                <button id="calculate-bnt-tile-return">Calculate</button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Sale Return</td>
+            <td id="bnt-return"></td>
+            <td id="bnt-tile-return"></td>
+        </tr>
+
+        <tr>
+            <td>Average Return</td>
+            <td id="bnt-average-return"></td>
+            <td id="bnt-tile-average-return"></td>
+        </tr>
+
+        <tr>
+            <td>Average Sale</td>
+            <td id="bnt-tile-average-sale"></td>
+            <td id="bnt-average-sale"></td>
+        </tr>
+
+        <tr>
+            <td>Current Allowance</td>
+            <td id="bnt-tile-allowance"></td>
+            <td id="bnt-allowance"></td>
+        </tr>
+
+        <tr>
+            <td>Sell Coin</td>
+            <td>
+                <input id="bnt-tile-sell-amount" type="number">
+                <button id="approve-bnt-tile">Approve</button>
+                <button id="sell-bnt-tile">Sell</button>
+            </td>
+            <td>
+                <input id="bnt-sell-amount" type="number">
+                <button id="approve-bnt">Approve</button>
+                <button id="sell-bnt">Sell</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<!-- This is hardcoded for now because it is private in contract.
+    Next version of code will have this pulled from contract -->
+<div>CRR: 10</div>
+
+
+<h3>Contracts</h3>
+
+<div>
+    <a id="storj-contract">Fake STORJ</a>
+    <a id="tile-contract">Fake TILE</a>
+    <a id="bnt-contract">Fake BNT</a>
+    <a id="token-changer-contract">Token Changer</a>
+    <a id="token-changer-bnt-contract">Token Changer BNT</a>
+</div>
+
+<script src="bundle.js"></script>
+
+</body>
+</html>

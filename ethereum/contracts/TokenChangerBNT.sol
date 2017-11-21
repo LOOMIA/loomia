@@ -1,41 +1,41 @@
 pragma solidity ^0.4.15;
 
-import './ERC20.sol';
+import './CentrallyIssuedToken.sol';
 import './SafeMath.sol';
 import './BancorFormula.sol';
 
-contract TokenChanger is BancorFormula {
-
+contract TokenChangerBNT is BancorFormula {
+    
     address public owner; 
-    ERC20 TILE;
-    ERC20 STORJ;
+    ERC20 public TILE;
+    ERC20 public BNT;
 
     uint public RESERVE_RATIO = 10; 
     uint public DECIMAL_PLACES = 7;
 
-    function TokenChanger (address tileContract, address storjContract) {
+    function TokenChangerBNT (address tileContract, address BNTContract) {
         owner = msg.sender;
         TILE = ERC20(tileContract);
-        STORJ = ERC20(storjContract);
+        BNT = ERC20(BNTContract);
     }
 
     function tileBalance () constant returns (uint) {
         return TILE.balanceOf(address(this));
     }
 
-    function storjBalance () constant returns (uint) {
-        return STORJ.balanceOf(address(this));
+    function BNTBalance () constant returns (uint) {
+        return BNT.balanceOf(address(this));
     }
 
-    // price of STORJ in TILE
-    function storjPrice () constant returns (uint) {
+    // price of BNT in TILE
+    function BNTPrice () constant returns (uint) {
         return tileBalance() * 10**DECIMAL_PLACES / 
-               (storjBalance() * RESERVE_RATIO);
+               (BNTBalance() * RESERVE_RATIO);
     }
 
-    // price of TILE in STORJ 
+    // price of TILE in BNT 
     function tilePrice () constant returns (uint) {
-        return storjBalance() * 10**DECIMAL_PLACES * RESERVE_RATIO / 
+        return BNTBalance() * 10**DECIMAL_PLACES * RESERVE_RATIO / 
                tileBalance();
     }
 
@@ -47,18 +47,18 @@ contract TokenChanger is BancorFormula {
     function sellTile(uint quantity) {
         success = TILE.transferFrom(msg.sender, address(this), quantity);
         require(success);
-        uint bid = BancorFormula.calculateSaleReturn(tileBalance(), storjBalance(), 1e5, quantity);
-        bool success = STORJ.transfer(msg.sender, bid);
+        uint bid = BancorFormula.calculateSaleReturn(tileBalance(), BNTBalance(), 1e5, quantity);
+        bool success = BNT.transfer(msg.sender, bid);
         require(success);
     }
 
-    // user has to approve STORJ contract to transfer funds before
+    // user has to approve BNT contract to transfer funds before
     // running this function or it will throw an error
     // WARNING: CRR IS HARDCODED
-    function sellStorj (uint quantity) {
-        bool success = STORJ.transferFrom(msg.sender, address(this), quantity);
+    function sellBNT (uint quantity) {
+        bool success = BNT.transferFrom(msg.sender, address(this), quantity);
         require(success);
-        uint bid = BancorFormula.calculatePurchaseReturn(tileBalance(), storjBalance(), 1e5, quantity);
+        uint bid = BancorFormula.calculatePurchaseReturn(tileBalance(), BNTBalance(), 1e5, quantity);
         success = TILE.transfer(msg.sender, bid);
         require(success);
     }
