@@ -81,7 +81,7 @@ contract Crowdsale {
     token.mint(beneficiary, tokens);
     TokenPurchase(msg.sender, beneficiary, weiAmount, tokens);
 
-    //forwardFunds();
+    forwardFunds();
   }
 
   // send ether to the fund collection wallet
