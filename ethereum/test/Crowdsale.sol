@@ -1,7 +1,7 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.18;
 
-import './MintableToken.sol';
-import './SafeMath.sol';
+import '../token/MintableToken.sol';
+import '../math/SafeMath.sol';
 
 /**
  * @title Crowdsale
@@ -40,17 +40,17 @@ contract Crowdsale {
   event TokenPurchase(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
 
-  function Crowdsale(uint256 _rate) {
-    //require(_startTime >= now);
-    //require(_endTime >= _startTime);
+  function Crowdsale(uint256 _startTime, uint256 _endTime, uint256 _rate, address _wallet) public {
+    require(_startTime >= now);
+    require(_endTime >= _startTime);
     require(_rate > 0);
-    //require(_wallet != address(0));
+    require(_wallet != address(0));
 
     token = createTokenContract();
-    //startTime = now;
-    //endTime = _endTime;
+    startTime = _startTime;
+    endTime = _endTime;
     rate = _rate;
-    wallet = msg.sender;
+    wallet = _wallet;
   }
 
   // creates the token to be sold.
@@ -61,14 +61,14 @@ contract Crowdsale {
 
 
   // fallback function can be used to buy tokens
-  function () payable {
+  function () external payable {
     buyTokens(msg.sender);
   }
 
   // low level token purchase function
   function buyTokens(address beneficiary) public payable {
     require(beneficiary != address(0));
-    //require(validPurchase());
+    require(validPurchase());
 
     uint256 weiAmount = msg.value;
 
@@ -91,10 +91,14 @@ contract Crowdsale {
   }
 
   // @return true if the transaction can buy tokens
-  function validPurchase() internal constant returns (bool) {
-    bool withinPeriod = true; //now >= startTime && now <= endTime;
+  function validPurchase() internal view returns (bool) {
+    bool withinPeriod = now >= startTime && now <= endTime;
     bool nonZeroPurchase = msg.value != 0;
     return withinPeriod && nonZeroPurchase;
   }
 
+  // @return true if crowdsale event has ended
+  function hasEnded() public view returns (bool) {
+    return now > endTime;
+  }
 }
