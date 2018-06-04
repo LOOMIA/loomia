@@ -1,0 +1,34 @@
+{
+    "TestVestingAddress": {
+        "one":      "0xf17f52151ebef6c7334fad080c5704d77216b732",
+        "two":      "0xc5fdf4076b8f3a5357c5e395ab970b5b54098fef",
+        "three":    "0x821aea9a577a9b44299b9c15c88cf3087f3b5544",
+        "four":     "0x0d1d4e623d10f9fba5db95830f7d3839406c6af2",
+        "five":     "0x2932b7a2355d6fecc4b5c0b6bd44cc31df247a2e"
+    },
+    "TestTimelockHolder":   "0x6330a553fc93768f612722bb8c2ec78ac90b3bbc",
+    "VestingAddress": {
+        "one": "0x0",
+        "two": "0x0",
+        "three": "0x0",
+        "four": "0x0",
+        "five": "0x0"
+    },
+    "TimelockHolder":     "0x0",
+    "networks": {
+        "develop": {
+            "host": "localhost",
+            "port": 9545,
+            "chainId": 4447,
+            "gas": 8000000,
+            "gasPrice": "0x01"
+        },
+        "coverage": {
+            "host": "localhost",
+            "port": 8555,
+            "chainId": 4447,
+            "gas": 17592186044415,
+            "gasPrice": "0x01"
+        }
+    }
+}
